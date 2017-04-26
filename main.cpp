@@ -43,6 +43,14 @@ int funcIn(double x, double y){
 
     return 0;
 }
+int funcIn(double x, double y, double z){
+    if((z > 0) && (z <= f(x, y)))
+        return 1;
+    else if((z > 0) && (z <= f(x, y)))
+        return -1;
+
+    return 0;
+}
 double monteCarloIntegral(double xp, double xk, int n){
     double yp = 0., yk = f(xk);
     double hits = 0.;
@@ -64,6 +72,19 @@ double monteCarloDoubleIntegral(double xp, double xk, double yp, double yk, int 
 
     }
     return ((xk - xp)*(yk - yp)/(double)n) * sum;
+}
+double monteCarloDoubleIntegralII(double xp, double xk, double yp, double yk, int n){
+    double zp = 0., zk = f(xk, yk);
+    double hits = 0.;
+
+    for(int i = 0; i < n; i++){
+        double x = xp + randInInterval(xp, xk);
+        double y = yp + randInInterval(yp, yk);
+        double z = zp + randInInterval(zp, zk);
+        hits += funcIn(x, y, z);
+    }
+    return (xk - xp)*(yk - yp)*(zk-zp)*hits/(double)n;
+
 }
 
 using namespace std;
@@ -93,6 +114,11 @@ int main() {
     cout << "128: " << fixed << volume(xp, xk, yp, yk,  128) << endl;
     cout << "10000: " << fixed << volume(xp, xk, yp, yk,  10000) << endl;
 
+
+    cout << "Suma funkcji f(x) dla ilości prób (MC2II): \n";
+    cout << "16: " << fixed << monteCarloDoubleIntegralII(xp, xk, yp, yk, 16) << endl;
+    cout << "128: " << fixed << monteCarloDoubleIntegralII(xp, xk, yp, yk,  128) << endl;
+    cout << "10000: " << fixed << monteCarloDoubleIntegralII(xp, xk, yp, yk,  10000) << endl;
 
     return 0;
 }
